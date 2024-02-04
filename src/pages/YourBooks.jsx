@@ -8,6 +8,8 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 import { useFirebase } from '../context/FirebaseContext';
 import { useNavigate } from 'react-router-dom';
+import BookCard from '../components/BookCard';
+import { Container } from 'react-bootstrap';
 
 
 const YourBooks = () => {
@@ -16,23 +18,20 @@ const YourBooks = () => {
     const [title, setTitle] = useState("");
     const [price, setPrice] = useState("");
     const [isbn, setIsbn] = useState("");
-    const [descrip, setDescrip] = useState("");
+    const [author, setAuthor] = useState("");
     const [img, setImg] = useState("");
     const [city, setCity] = useState("");
     const [stat, setStat] = useState("");
     const [zip, setZip] = useState("");
     const [flag, setFlag] = useState(false);
 
-    const [booksWithImages, setBooksWithImages] = useState([])
+    const [books, setBooks] = useState([]);
 
 
-    const [url, setUrl] = useState(null)
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
     const firebase = useFirebase();
-
-    const navigate = useNavigate();
 
 
     const [validated, setValidated] = useState(false);
@@ -41,12 +40,14 @@ const YourBooks = () => {
         const fetchData = async () => {
             try {
                 const res = await firebase.getBooksByUserEmail();
-                console.log("Books : ", res);
-                setBooksWithImages(res)
+                const booksData = res.docs.map(doc => doc.data());
+                setBooks(booksData); // Clear existing data and set with new data
+                console.log("Books : ", booksData);
             } catch (error) {
                 console.error("Error fetching books:", error);
             }
         };
+
 
         fetchData();
     }, [flag]);
@@ -64,7 +65,7 @@ const YourBooks = () => {
         setValidated(true);
 
         try {
-            const res = await firebase.addBookToSell(title, price, isbn, descrip, img, city, stat, zip);
+            const res = await firebase.addBookToSell(title, price, isbn, author, img, city, stat, zip);
             console.log("Result : ", res);
             if (flag) {
                 setFlag(false)
@@ -72,7 +73,7 @@ const YourBooks = () => {
                 setFlag(true)
             }
             setTitle("")
-            setDescrip("")
+            setAuthor("")
             setCity("")
             setZip("")
             setImg(null)
@@ -102,14 +103,22 @@ const YourBooks = () => {
                 </div>
 
             </div>
-            {booksWithImages?.map((book) => (
-                <BookComp
-                    key={book.id} // Ensure each component has a unique key
-                    title={book.title}
-                    price={book.price}
-                    isbn={book.isbn}
-                />
-            ))}
+            <div className="container d-flex flex-wrap ">
+                {books.map((book) => (
+                    <BookCard
+                        key={book.id}
+                        title={book.title}
+                        price={book.price}
+                        isbn={book.isbn}
+                        desc={book.Description}
+                        city={book.city}
+                        email={book.email}
+                        zip={book.zip}
+                        img={book.imgDownloadUrl}
+                    />
+                ))}
+            </div>
+
 
 
 
@@ -155,13 +164,13 @@ const YourBooks = () => {
                             </Form.Group>
                         </Row>
                         <Form.Group className="mb-3">
-                            <Form.Label>Description</Form.Label>
+                            <Form.Label>Author</Form.Label>
                             <Form.Control
                                 required
                                 type="text"
                                 placeholder="Description..."
-                                value={descrip}
-                                onChange={e => setDescrip(e.target.value)}
+                                value={author}
+                                onChange={e => setAuthor(e.target.value)}
                             />
                         </Form.Group>
                         <Form.Group className="mb-3">

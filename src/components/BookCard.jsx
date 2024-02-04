@@ -1,26 +1,39 @@
-import React from 'react'
+import React from 'react';
 import { Button } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
-
+import { useFirebase } from '../context/FirebaseContext';
 
 const BookCard = (props) => {
+    const firebase = useFirebase();
+
+    console.log("User Email from Firebase:", firebase.user ? firebase.user.email : "Not logged in");
+    console.log("Props Email:", props.email);
+
     return (
-        <div className=''>
-            <Card style={{ width: '18rem' }}>
-                <Card.Img variant="top" src={props.value} />
+        <div className='me-3'>
+            <Card style={{ width: '18rem', height: '22rem' }}>
+                <Card.Img variant="top" src={props.img} />
                 <Card.Body>
-                    <Card.Title>Book Name</Card.Title>
+                    <Card.Title>{props.title}</Card.Title>
                     <Card.Text>
-                        Here we will show description of the book saved in our database.
+                        {props.desc}
                         
                         <Card.Title>Author</Card.Title>
-                        <p>Price : Rs. 500</p>
-                        <Button>Add To Cart</Button>
+                        <p>Price: Rs. {props.price}</p>
+                        
+                        {firebase.user && firebase.user.email === props.email ? (
+                            <div className='d-flex mb-1'>
+                                <Button variant='danger' className='me-1'>Delete</Button>
+                                <Button variant='success'>Edit</Button>
+                            </div>
+                        ) : (
+                            <Button>Add To Cart</Button>
+                        )}
                     </Card.Text>
                 </Card.Body>
             </Card>
         </div>
-    )
+    );
 }
 
-export default BookCard
+export default BookCard;

@@ -64,6 +64,40 @@ export const FirebaseProvider = (props) => {
 
 
 
+ //  LOGIN LOGIC
+
+ const loginWithEmailAndPassword = async (email, password) => {
+  try {
+    const authResult = await signInWithEmailAndPassword(FirebaseAuth, email, password);
+
+    // Create a reference to the users collection
+    const userRef = collection(db, "users");
+
+    // Create a query against the collection.
+    const q = query(userRef, where("userEmail", "==", email));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      // If no matching user is found in Firestore, return a special result
+      return {
+        user: authResult.user,
+        userInfo: null, // or an empty object, depending on your preference
+      };
+    }
+    console.log("User Info from Firestore", querySnapshot.docs[0].data())
+    const userInfo = querySnapshot.docs[0].data(); // Assuming there is only one matching user
+    setUserInfo(userInfo)
+    setUser(authResult.user)
+    console.log("User from Firebase new console", user.email)
+    return {
+      user: authResult.user,
+      userInfo: userInfo,
+    };
+  } catch (err) {
+    console.error("Error during login:", err);
+    throw err; // Re-throw the error for the calling function to handle
+  }
+};
 
 
   //  SIGN UP LOGIC
@@ -92,96 +126,52 @@ export const FirebaseProvider = (props) => {
 
 
 
-  //  LOGIN LOGIC
-
-  const loginWithEmailAndPassword = async (email, password) => {
-    try {
-      const authResult = await signInWithEmailAndPassword(FirebaseAuth, email, password);
-
-      // Create a reference to the users collection
-      const userRef = collection(db, "users");
-
-      // Create a query against the collection.
-      const q = query(userRef, where("userEmail", "==", email));
-      const querySnapshot = await getDocs(q);
-
-      if (querySnapshot.empty) {
-        // If no matching user is found in Firestore, return a special result
-        return {
-          user: authResult.user,
-          userInfo: null, // or an empty object, depending on your preference
-        };
-      }
-      console.log("User Info from Firestore", querySnapshot.docs[0].data())
-      const userInfo = querySnapshot.docs[0].data(); // Assuming there is only one matching user
-      setUserInfo(userInfo)
-      setUser(authResult.user)
-      return {
-        user: authResult.user,
-        userInfo: userInfo,
-      };
-    } catch (err) {
-      console.error("Error during login:", err);
-      throw err; // Re-throw the error for the calling function to handle
-    }
-  };
-
+ 
 
 
   // ADD BOOK TO DATABASE
 
-  const addBookToSell = async (title, price, isbn, descrip, img, city, state, zip) => {
+  const addBookToSell = async (title, price, isbn, author, img, city, state, zip) => {
     if (isLoggedIn) {
-
-      const imgRef = ref(storage, `uploads/images/${Date.now()}-${img.name}`);
-      const uploadRes = await uploadBytes(imgRef, img);
-
-      const bookData = {
-        title,
-        price,
-        isbn,
-        Description: descrip,
-        imgUrl: uploadRes.ref.fullPath,
-        city,
-        state,
-        zip,
-        email: user.email
+      try {
+        const imgRef = ref(storage, `uploads/images/${Date.now()}-${img.name}`);
+        const uploadRes = await uploadBytes(imgRef, img);
+        const imgDownloadUrl = await getDownloadURL(imgRef);
+        console.log("img path : ", uploadRes.metadata.fullPath);
+        const bookData = {
+          title,
+          price,
+          isbn,
+          author,
+          imgDownloadUrl: imgDownloadUrl,
+          imgPath: uploadRes.metadata.fullPath,
+          city,
+          state,
+          zip,
+          email: user.email
+        }
+  
+        const bookRef = await addDoc(collection(db, "books"), bookData);
+        console.log("Book added!! Response : ", bookRef);
+        console.log("img path : ", uploadRes.fullPath);
+  
+      } catch (error) {
+        console.error("Error adding book:", error.message);
+        // Handle the error, notify the user, or perform other actions as needed
       }
-      const bookRef = await addDoc(collection(db, "books"), bookData);
-      console.log("Book added!! Response : ", bookRef);
-
-
     } else {
-      console.warn("Please Login")
+      console.warn("Please Login");
     }
   }
+  
 
 
   const getBooksByUserEmail = async () => {
     // if(!user) return null
     try {
       const q = query(collection(db, "books"), where("email", "==", user.email));
-      const books = await getDocs(q);
-  
-      // Map through the books array and fetch image URLs
-      const booksWithImages = await Promise.all(books.docs.map(async (doc) => {
-        const bookData = doc.data();
-        // console.log("Book Data ", bookData);
-  
-        try {
-          const imageUrl = await getDownloadURL(ref(storage,bookData.imgUrl)); // Assuming you have a function for this
-          // console.log(imageUrl)
-
-
-          return { ...bookData, imageUrl };
-        } catch (error) {
-          console.error(`Error getting download URL: ${error.message}`);
-          // Handle the error, e.g., provide a default image URL
-          return { ...bookData, imageUrl: 'default-image-url' };
-        }
-      }));
-  
-      console.log(booksWithImages);
+      const books = await getDocs(q); 
+      return books
     } catch (error) {
       console.error(`Error fetching books: ${error.message}`);
     }
