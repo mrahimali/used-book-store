@@ -4,14 +4,17 @@ import './index.css';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom'
 import { FirebaseProvider } from './context/FirebaseContext';
+import { ProductContextProvider } from './context/ProductContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <FirebaseProvider>
-        <App />
-      </FirebaseProvider>
+      <ProductContextProvider>
+        <FirebaseProvider>
+          <App />
+        </FirebaseProvider>
+      </ProductContextProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

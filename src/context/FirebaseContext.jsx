@@ -84,11 +84,11 @@ export const FirebaseProvider = (props) => {
         userInfo: null, // or an empty object, depending on your preference
       };
     }
-    console.log("User Info from Firestore", querySnapshot.docs[0].data())
+    // console.log("User Info from Firestore", querySnapshot.docs[0].data())
     const userInfo = querySnapshot.docs[0].data(); // Assuming there is only one matching user
     setUserInfo(userInfo)
     setUser(authResult.user)
-    console.log("User from Firebase new console", user.email)
+    // console.log("User from Firebase new console", user.email)
     return {
       user: authResult.user,
       userInfo: userInfo,

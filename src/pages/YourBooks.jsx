@@ -40,9 +40,13 @@ const YourBooks = () => {
         const fetchData = async () => {
             try {
                 const res = await firebase.getBooksByUserEmail();
-                const booksData = res.docs.map(doc => doc.data());
+                // console.log("Result :",res.doc)
+                const booksData = res.docs.map(doc => {
+                    // console.log("Id:  ",doc.id);
+                    return doc;
+                });
                 setBooks(booksData); // Clear existing data and set with new data
-                console.log("Books : ", booksData);
+                // console.log("Books : ", booksData);
             } catch (error) {
                 console.error("Error fetching books:", error);
             }
@@ -105,18 +109,19 @@ const YourBooks = () => {
             </div>
             <div className="container d-flex flex-wrap ">
                 {books.map((book) => (
-                    <BookCard
-                        key={book.id}
-                        title={book.title}
-                        price={book.price}
-                        isbn={book.isbn}
-                        desc={book.Description}
-                        city={book.city}
-                        email={book.email}
-                        zip={book.zip}
-                        img={book.imgDownloadUrl}
+                        <BookCard
+                        id={book.id}
+                        title={book.data().title}
+                        price={book.data().price}
+                        isbn={book.data().isbn}
+                        desc={book.data().Description}
+                        city={book.data().city}
+                        email={book.data().email}
+                        zip={book.data().zip}
+                        img={book.data().imgDownloadUrl}
                     />
-                ))}
+                    )
+                )}
             </div>
 
 
