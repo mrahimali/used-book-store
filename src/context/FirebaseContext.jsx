@@ -176,6 +176,17 @@ export const FirebaseProvider = (props) => {
       console.error(`Error fetching books: ${error.message}`);
     }
   };
+
+  const getAllBooks = async () => {
+    // if(!user) return null
+    try {
+      const q = query(collection(db, "books"));
+      const books = await getDocs(q); 
+      return books
+    } catch (error) {
+      console.error(`Error fetching books: ${error.message}`);
+    }
+  };
   
 
 
@@ -196,7 +207,7 @@ export const FirebaseProvider = (props) => {
   const isLoggedIn = user ? true : false;
 
   return (
-    <firebaseContext.Provider value={{ user, userInfo, signUpUserWithEmailAndPassword, loginWithEmailAndPassword, isLoggedIn, logOutuser, addBookToSell, getBooksByUserEmail }}>
+    <firebaseContext.Provider value={{ user, userInfo, signUpUserWithEmailAndPassword, loginWithEmailAndPassword, isLoggedIn, logOutuser, addBookToSell, getBooksByUserEmail, getAllBooks }}>
       {props.children}
     </firebaseContext.Provider>
   )

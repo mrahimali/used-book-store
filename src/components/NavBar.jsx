@@ -17,7 +17,9 @@ const NavBar = () => {
     const [showLogin, setShowLogin] = useState(false);
     const firebase = useFirebase();
     const cartContext = useProductContext();
-    const [clicked, setClicked] = useState(false);
+
+    const [modalShow, setModalShow] = useState(false);
+
 
     const login = firebase.isLoggedIn;
 
@@ -40,8 +42,6 @@ const NavBar = () => {
     const handleLogOut = () => firebase.logOutuser();
 
     const handleCart = () => {
-        setClicked(true);
-        console.log("Clicked state:", clicked);
     }
     
     
@@ -68,7 +68,7 @@ const NavBar = () => {
                 {
                     login == false ? <div className='d-flex'><Button variant="primary m-1" onClick={handleLoginShow}>SignIn</Button> <Button variant="secondary m-1" onClick={handleSignUpShow}>SignUp</Button></div> : <Button variant="primary m-1" onClick={handleLogOut}>Logout</Button>
                 }
-                <Button variant="outline-info me-4" onClick={handleCart} disabled>Cart {noOfItem}</Button>
+                <Link to={'/cart'}><Button variant="outline-info me-4">Cart <small>{noOfItem}</small></Button></Link>
 
 
             </Navbar>
