@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import BookComp from '../components/BookComp'
+// import BookComp from '../components/BookComp'
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';

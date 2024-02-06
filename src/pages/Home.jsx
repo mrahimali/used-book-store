@@ -36,8 +36,8 @@ const Home = () => {
     return (
         <div className="container d-flex flex-wrap">
                         {
-                            books.map(book=>(
-                                <BookCard 
+                            books.map((book)=>(
+                                <BookCard
                                 id={book.id}
                                 title={book.data().title}
                                 price={book.data().price}

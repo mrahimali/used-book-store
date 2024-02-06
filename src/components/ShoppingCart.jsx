@@ -13,9 +13,7 @@ const ShoppingCart = () => {
     return (
         <div className='container'>
             <h1 className='text-center mb-4'>Your Cart</h1>
-            {products.map((product, index) => (
-                <CartCard key={index} product={product} />
-            ))}
+                <CartCard />
         </div>
     );
 };
