@@ -7,6 +7,7 @@ import { useProductContext } from '../context/ProductContext';
 const BookCard = (props) => {
     const firebase = useFirebase();
     const productContext = useProductContext();
+    // const [qty, setQty]=useState(0);
 
 
     const addToCart = () => {
@@ -15,7 +16,7 @@ const BookCard = (props) => {
         if (existingProductIndex !== -1) {
             // Product is already in the cart, update its quantity
             const updatedCart = [...productContext.product];
-            updatedCart[existingProductIndex].qty += 1;
+            updatedCart[existingProductIndex].qty = 1;
             productContext.setProduct(updatedCart);
         } else {
             // Product is not in the cart, add it with quantity 1
@@ -30,6 +31,7 @@ const BookCard = (props) => {
                 qty: 1
             };
             productContext.setProduct([...productContext.product, data]);
+            // setQty(qty+1)
         }
         
     }
@@ -38,16 +40,11 @@ const BookCard = (props) => {
     // }, [productContext.product]);
 
 
-    const reduceFromCart = () => {
-
-    }
-
-
     return (
         <div className='me-3 mb-4'>
             <Card style={{ width: '18rem', height: '22rem' }}>
                 <p></p>
-                <Card.Img variant="top" src={props.img} />
+                <Card.Img variant="top" src={props.img} height={130} />
                 <Card.Body>
                     <Card.Title>{props.title}</Card.Title>
                     <Card.Text>
@@ -64,8 +61,7 @@ const BookCard = (props) => {
                         ) : (
 
                             <div>
-                                <Button variant='secondary' className='me-3' onClick={addToCart} >+</Button>
-                                <Button variant='secondary' onClick={reduceFromCart} >-</Button>
+                                <Button variant='primary' className='me-3' onClick={addToCart} >Add To Cart</Button>{props.qty}
                             </div>
                         )}
                     </Card.Text>

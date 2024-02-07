@@ -1,9 +1,24 @@
-import React from 'react';
-import { Button, Container, Row, Col, Image } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Button, Container, Row, Col, Image, Nav } from 'react-bootstrap';
 import { useProductContext } from '../context/ProductContext';
+import { Link } from 'react-router-dom';
+import Modal from 'react-bootstrap/Modal';
+import PlaceOrder from './PlaceOrder';
+
+
+
+
 
 const CartCard = () => {
+
+
+
     const cartProduct = useProductContext();
+
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     if (cartProduct.product.length === 0) {
         return <p>Your cart is empty</p>;
@@ -80,10 +95,16 @@ const CartCard = () => {
 
                 })
             }
-            <div className='text-center'>
+            <div className='text-center mb-5'>
                 <h5 >Total Payable Ammount : {grossTotal}</h5>
-                <Button variant='success' className='alig'>Pay</Button>
+                <Button onClick={handleShow} >Place Your Order</Button>
             </div>
+
+
+
+            <Modal show={show} onHide={handleClose}>
+                <PlaceOrder handleClose={handleClose} product={cartProduct.product}/>
+            </Modal>
         </div>
     )
 }
