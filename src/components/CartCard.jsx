@@ -23,9 +23,9 @@ const CartCard = () => {
     if (cartProduct.product.length === 0) {
         return <p>Your cart is empty</p>;
     }
-    const increaseQty = (productId) => {
+    const increaseQty = (productIsbn) => {
         const updatedCart = cartProduct.product.map(product => {
-            if (product.id === productId) {
+            if (product.isbn === productIsbn) {
                 return { ...product, qty: product.qty + 1 };
             }
             return product;
@@ -33,9 +33,9 @@ const CartCard = () => {
         cartProduct.setProduct(updatedCart);
     };
 
-    const decreaseQty = (productId) => {
+    const decreaseQty = (productIsbn) => {
         const updatedCart = cartProduct.product.map(product => {
-            if (product.id === productId && product.qty > 1) {
+            if (product.isbn === productIsbn && product.qty > 1) {
                 return { ...product, qty: product.qty - 1 };
             }
             return product;
@@ -43,8 +43,8 @@ const CartCard = () => {
         cartProduct.setProduct(updatedCart.filter(product => product.qty > 0));
     };
 
-    const removeProd = (productId) => {
-        const updatedCart = cartProduct.product.filter(product => product.id !== productId);
+    const removeProd = (productIsbn) => {
+        const updatedCart = cartProduct.product.filter(product => product.isbn !== productIsbn);
         cartProduct.setProduct(updatedCart);
     };
 
@@ -70,11 +70,11 @@ const CartCard = () => {
                                         <p>Owner's Contact: {product.email}</p>
                                     </div>
                                     <div className='d-flex align-items-center'>
-                                        <Button variant='secondary' size='sm' className='me-2' onClick={() => increaseQty(product.id)}>
+                                        <Button variant='secondary' size='sm' className='me-2' onClick={() => increaseQty(product.isbn)}>
                                             +
                                         </Button>
                                         <span className='fw-bold'>{product.qty}</span>
-                                        <Button variant='secondary' size='sm' className='ms-2' onClick={() => decreaseQty(product.id)}>
+                                        <Button variant='secondary' size='sm' className='ms-2' onClick={() => decreaseQty(product.isbn)}>
                                             -
                                         </Button>
                                     </div>
@@ -84,7 +84,7 @@ const CartCard = () => {
                                         <p>Total:</p>
                                         <strong>Rs.{product.price * product.qty}</strong>
                                     </div>
-                                    <Button variant='danger' size='sm' onClick={() => removeProd(product.id)}>
+                                    <Button variant='danger' size='sm' onClick={() => removeProd(product.isbn)}>
                                         Remove
                                     </Button>
                                 </Col>
