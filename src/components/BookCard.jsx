@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Button } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import { useFirebase } from '../context/FirebaseContext';
@@ -7,16 +7,14 @@ import { useProductContext } from '../context/ProductContext';
 const BookCard = (props) => {
     const firebase = useFirebase();
     const productContext = useProductContext();
-    // const [qty, setQty]=useState(0);
-
 
     const addToCart = () => {
-        const existingProductIndex = productContext.product.findIndex(prod => prod.id === props.id);
-    
+        const existingProductIndex = productContext.product.findIndex(prod => prod.isbn === props.isbn);
+
         if (existingProductIndex !== -1) {
             // Product is already in the cart, update its quantity
             const updatedCart = [...productContext.product];
-            updatedCart[existingProductIndex].qty = 1;
+            updatedCart[existingProductIndex].qty += 1; // Increment the quantity
             productContext.setProduct(updatedCart);
         } else {
             // Product is not in the cart, add it with quantity 1
@@ -25,20 +23,14 @@ const BookCard = (props) => {
                 title: props.title,
                 author: props.author,
                 isbn: props.isbn,
-                email:props.email,
-                img:props.img,
+                email: props.email,
+                img: props.img,
                 price: props.price,
                 qty: 1
             };
             productContext.setProduct([...productContext.product, data]);
-            // setQty(qty+1)
         }
-        
     }
-    // useEffect(() => {
-    //     console.log(productContext.product);
-    // }, [productContext.product]);
-
 
     return (
         <div className='me-3 mb-4'>
@@ -61,7 +53,7 @@ const BookCard = (props) => {
                         ) : (
 
                             <div>
-                                <Button variant='primary' className='me-3' onClick={addToCart} >Add To Cart</Button>{props.qty}
+                                <Button variant='primary' className='me-3' onClick={addToCart}>Add To Cart</Button>{props.qty}
                             </div>
                         )}
                     </Card.Text>

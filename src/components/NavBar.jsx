@@ -19,6 +19,7 @@ const NavBar = () => {
     const cartContext = useProductContext();
 
     const [modalShow, setModalShow] = useState(false);
+    const [val, setVal]=useState("");
 
 
     const login = firebase.isLoggedIn;
@@ -43,6 +44,11 @@ const NavBar = () => {
 
     const handleCart = () => {
     }
+    // const handleSearch=async (e)=>{
+    //     setVal(e.terget.value);
+
+    //     const res=await firebase.getAllBooks();
+    // }
     
     
     return (
@@ -57,14 +63,16 @@ const NavBar = () => {
                         <Nav.Link><Link className='text-decoration-none text-white' to={'/orders'}>Orders</Link></Nav.Link>
                     </Nav>
                 </Container>
-                <InputGroup >
+                {/* <InputGroup >
                     <Form.Control
                         aria-label="Default"
                         aria-describedby="inputGroup-sizing-default"
                         placeholder='search your book....'
+                        value={val}
+                        onChange={e=>handleSearch(e)}
                     />
                     <InputGroup.Text id="inputGroup-sizing-default">Search</InputGroup.Text>
-                </InputGroup>
+                </InputGroup> */}
                 {
                     login == false ? <div className='d-flex'><Button variant="primary m-1" onClick={handleLoginShow}>SignIn</Button> <Button variant="secondary m-1" onClick={handleSignUpShow}>SignUp</Button></div> : <Button variant="primary m-1" onClick={handleLogOut}>Logout</Button>
                 }
